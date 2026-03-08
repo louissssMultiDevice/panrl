@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel - NdiiClouD</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #00d4ff;
+            --secondary: #7b2cbf;
+            --accent: #ff006e;
+            --dark: #0a0a0f;
+            --darker: #050508;
+            --light: #e0e0e0;
+            --success: #00f5d4;
+            --warning: #fee440;
+            --danger: #f15bb5;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            position: fixed;
+            left: 0; top: 0;
+            width: 280px; height: 100vh;
+            background: var(--dark);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            z-index: 100;
+        }
+        
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 48px; height: 48px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .nav-section {
+            padding: 16px 0;
+        }
+        
+        .nav-title {
+            padding: 8px 24px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        
+        .nav-item i { width: 24px; text-align: center; }
+        
+        .badge {
+            margin-left: auto;
+            background: var(--accent);
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+        
+        .top-bar {
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .admin-badge {
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .content { padding: 32px; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+        }
+        
+        .stat-card h3 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .stat-card p {
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+        }
+        
+        .stat-card.primary h3 { color: var(--primary); }
+        .stat-card.success h3 { color: var(--success); }
+        .stat-card.warning h3 { color: var(--warning); }
+        .stat-card.danger h3 { color: var(--danger); }
+        
+        .section {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 16px 24px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        th {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 0.5px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .user-avatar {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .status-badge.verified {
+            background: rgba(0, 245, 212, 0.2);
+            color: var(--success);
+        }
+        
+        .status-badge.pending {
+            background: rgba(254, 228, 64, 0.2);
+            color: var(--warning);
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: #000;
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: #000;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">🦖</div>
+                <div>
+                    <h1 style="font-size: 20px; font-weight: 700;">NdiiClouD</h1>
+                    <p style="font-size: 12px; opacity: 0.8;">Admin Panel</p>
+                </div>
+            </div>
+        </div>
+        
+        <nav>
+            <div class="nav-section">
+                <div class="nav-title">Management</div>
+                <a href="/admin" class="nav-item active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <a href="/admin/verifications" class="nav-item">
+                    <i class="fas fa-check-circle"></i>
+                    Verifications
+                    <% if (stats.pendingVerifications > 0) { %>
+                        <span class="badge"><%= stats.pendingVerifications %></span>
+                    <% } %>
+                </a>
+                <a href="/admin/bots" class="nav-item">
+                    <i class="fas fa-robot"></i>
+                    All Bots
+                </a>
+                <a href="/admin/chats" class="nav-item">
+                    <i class="fas fa-comments"></i>
+                    Support Chats
+                    <% if (stats.unreadChats > 0) { %>
+                        <span class="badge"><%= stats.unreadChats %></span>
+                    <% } %>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">System</div>
+                <a href="/admin/users" class="nav-item">
+                    <i class="fas fa-users"></i>
+                    Users
+                </a>
+                <a href="/admin/settings" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </a>
+                <a href="/logout" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </nav>
+    </aside>
+    
+    <main class="main-content">
+        <header class="top-bar">
+            <h2>Admin Dashboard</h2>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <span class="admin-badge"><i class="fas fa-shield-alt"></i> SUPERADMIN</span>
+                <div class="user-info">
+                    <div class="user-avatar"><%= user.name.charAt(0) %></div>
+                    <span><%= user.name %></span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="content">
+            <div class="stats-grid">
+                <div class="stat-card primary">
+                    <h3><%= stats.users %></h3>
+                    <p><i class="fas fa-users"></i> Total Users</p>
+                </div>
+                <div class="stat-card success">
+                    <h3><%= stats.bots %></h3>
+                    <p><i class="fas fa-robot"></i> Total Bots</p>
+                </div>
+                <div class="stat-card warning">
+                    <h3><%= stats.activeBots %></h3>
+                    <p><i class="fas fa-play-circle"></i> Active Bots</p>
+                </div>
+                <div class="stat-card danger">
+                    <h3><%= stats.pendingVerifications %></h3>
+                    <p><i class="fas fa-clock"></i> Pending Verif</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <h3><i class="fas fa-user-clock"></i> Recent Users</h3>
+                    <a href="/admin/users" class="btn btn-primary">View All</a>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Phone</th>
+                            <th>Status</th>
+                            <th>Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% recentUsers.forEach(u => { %>
+                            <tr>
+                                <td>
+                                    <div class="user-info">
+                                        <div class="user-avatar"><%= u.name.charAt(0) %></div>
+                                        <div>
+                                            <div style="font-weight: 600;"><%= u.name %></div>
+                                            <div style="font-size: 12px; color: rgba(255,255,255,0.5);">ID: <%= u.id.slice(0, 8) %>...</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><%= u.phone %></td>
+                                <td>
+                                    <span class="status-badge <%= u.isActive ? 'verified' : 'pending' %>">
+                                        <%= u.isActive ? 'Active' : 'Pending' %>
+                                    </span>
+                                </td>
+                                <td><%= new Date(u.createdAt).toLocaleDateString() %></td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
