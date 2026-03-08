@@ -8,7 +8,7 @@ class AdminBot {
         this.sock = null;
         this.qr = null;
         this.isConnected = false;
-        this.prefix = '!';
+        this.prefix = '/';
     }
 
     async start() {
