@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - NdiiClouD Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #00d4ff;
+            --secondary: #7b2cbf;
+            --accent: #ff006e;
+            --dark: #0a0a0f;
+            --darker: #050508;
+            --light: #e0e0e0;
+            --success: #00f5d4;
+            --warning: #fee440;
+            --danger: #f15bb5;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--darker);
+            color: var(--light);
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0; top: 0;
+            width: 280px; height: 100vh;
+            background: var(--dark);
+            border-right: 1px solid rgba(255,255,255,0.1);
+            z-index: 100;
+            overflow-y: auto;
+        }
+        
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 48px; height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .logo-text h1 {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .logo-text p {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .nav-section {
+            padding: 16px 0;
+        }
+        
+        .nav-title {
+            padding: 8px 24px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 1px;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+        }
+        
+        .nav-item:hover, .nav-item.active {
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        
+        .nav-item i {
+            width: 24px;
+            text-align: center;
+        }
+        
+        .badge {
+            margin-left: auto;
+            background: var(--accent);
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            min-height: 100vh;
+        }
+        
+        .top-bar {
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+        
+        .user-avatar {
+            width: 40px; height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        /* Content */
+        .content {
+            padding: 32px;
+        }
+        
+        .page-header {
+            margin-bottom: 32px;
+        }
+        
+        .page-header h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        
+        .page-header p {
+            color: rgba(255,255,255,0.5);
+        }
+        
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        
+        .stat-card {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .stat-icon {
+            width: 56px; height: 56px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .stat-icon.blue { background: rgba(0, 212, 255, 0.1); color: var(--primary); }
+        .stat-icon.green { background: rgba(0, 245, 212, 0.1); color: var(--success); }
+        .stat-icon.purple { background: rgba(123, 44, 191, 0.1); color: var(--secondary); }
+        .stat-icon.orange { background: rgba(254, 228, 64, 0.1); color: var(--warning); }
+        
+        .stat-info h3 {
+            font-size: 32px;
+            font-weight: 700;
+        }
+        
+        .stat-info p {
+            color: rgba(255,255,255,0.5);
+            font-size: 14px;
+        }
+        
+        /* Bots Section */
+        .section {
+            background: var(--glass);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .section-header h3 {
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        
+        .btn-success { background: var(--success); color: var(--dark); }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-warning { background: var(--warning); color: var(--dark); }
+        
+        /* Bot Cards */
+        .bots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 24px;
+            padding: 24px;
+        }
+        
+        .bot-card {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+        }
+        
+        .bot-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+        
+        .bot-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        
+        .bot-title h4 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+        
+        .bot-title span {
+            font-size: 12px;
+            color: rgba(255,255,255,0.5);
+        }
+        
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-badge.running {
+            background: rgba(0, 245, 212, 0.2);
+            color: var(--success);
+        }
+        
+        .status-badge.stopped {
+            background: rgba(241, 91, 181, 0.2);
+            color: var(--danger);
+        }
+        
+        .status-badge.connecting {
+            background: rgba(254, 228, 64, 0.2);
+            color: var(--warning);
+        }
+        
+        .bot-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+        
+        .info-item {
+            font-size: 12px;
+        }
+        
+        .info-item span {
+            display: block;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 2px;
+        }
+        
+        .info-item strong {
+            color: #fff;
+        }
+        
+        .bot-actions {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .bot-actions .btn {
+            flex: 1;
+            justify-content: center;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: var(--dark);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .modal-body {
+            padding: 24px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.5);
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 24px;
+        }
+        
+        .empty-state i {
+            font-size: 64px;
+            color: rgba(255,255,255,0.2);
+            margin-bottom: 16px;
+        }
+        
+        .empty-state h4 {
+            margin-bottom: 8px;
+        }
+        
+        .empty-state p {
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 24px;
+        }
+        
+        /* Console Modal */
+        .console-modal .modal-content {
+            max-width: 800px;
+            width: 95%;
+        }
+        
+        .console-container {
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .console-header {
+            background: rgba(255,255,255,0.05);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .console-output {
+            height: 400px;
+            overflow-y: auto;
+            padding: 16px;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        
+        .console-line {
+            margin-bottom: 4px;
+        }
+        
+        .console-line.stdout { color: #e0e0e0; }
+        .console-line.stderr { color: #f87171; }
+        .console-line.system { color: #60a5fa; }
+        
+        /* Editor */
+        .editor-container {
+            height: 400px;
+        }
+        
+        .editor-textarea {
+            width: 100%;
+            height: 100%;
+            background: #0d1117;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            padding: 16px;
+            color: #e6edf3;
+            font-family: 'Consolas', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: none;
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon">🤖</div>
+                <div class="logo-text">
+                    <h1>NdiiClouD</h1>
+                    <p>Panel v3.0</p>
+                </div>
+            </div>
+        </div>
+        
+        <nav>
+            <div class="nav-section">
+                <div class="nav-title">Main</div>
+                <a href="/dashboard" class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    Dashboard
+                </a>
+                <a href="/chat" class="nav-item">
+                    <i class="fas fa-comments"></i>
+                    Support Chat
+                    <% if (unreadChat > 0) { %>
+                        <span class="badge"><%= unreadChat %></span>
+                    <% } %>
+                </a>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-title">Account</div>
+                <a href="/account" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    Profile
+                </a>
+                <a href="/logout" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </div>
+        </nav>
+    </aside>
+    
+    <main class="main-content">
+        <header class="top-bar">
+            <h3>Welcome back, <%= user.name %>! 👋</h3>
+            <div class="user-menu">
+                <div class="user-info">
+                    <div class="user-avatar"><%= user.name.charAt(0).toUpperCase() %></div>
+                    <div>
+                        <div style="font-weight: 600;"><%= user.name %></div>
+                        <div style="font-size: 12px; color: rgba(255,255,255,0.5);"><%= user.phone %></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        
+        <div class="content">
+            <div class="page-header">
+                <h2>Dashboard</h2>
+                <p>Kelola bot WhatsApp Anda dengan mudah</p>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3><%= bots.length %></h3>
+                        <p>Total Bots</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3><%= bots.filter(b => b.isRunning).length %></h3>
+                        <p>Running</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-code-branch"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Node.js</h3>
+                        <p>v<%= nodeVersions.join(', v') %></p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-server"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Active</h3>
+                        <p>System Online</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">
+                    <h3><i class="fas fa-cube"></i> My Bots</h3>
+                    <button class="btn btn-primary btn-sm" onclick="showCreateModal()">
+                        <i class="fas fa-plus"></i> Create Bot
+                    </button>
+                </div>
+                
+                <% if (bots.length === 0) { %>
+                    <div class="empty-state">
+                        <i class="fas fa-robot"></i>
+                        <h4>No Bots Yet</h4>
+                        <p>Create your first WhatsApp bot to get started</p>
+                        <button class="btn btn-primary" onclick="showCreateModal()">
+                            <i class="fas fa-plus"></i> Create Bot
+                        </button>
+                    </div>
+                <% } else { %>
+                    <div class="bots-grid">
+                        <% bots.forEach(bot => { %>
+                            <div class="bot-card" id="bot-<%= bot.id %>">
+                                <div class="bot-header">
+                                    <div class="bot-title">
+                                        <h4><%= bot.name %></h4>
+                                        <span>Node.js v<%= bot.nodeVersion %></span>
+                                    </div>
+                                    <span class="status-badge <%= bot.status %>"><%= bot.status %></span>
+                                </div>
+                                
+                                <div class="bot-info">
+                                    <div class="info-item">
+                                        <span>Phone</span>
+                                        <strong><%= bot.phoneConnected || 'Not connected' %></strong>
+                                    </div>
+                                    <div class="info-item">
+                                        <span>Created</span>
+                                        <strong><%= new Date(bot.createdAt).toLocaleDateString() %></strong>
+                                    </div>
+                                </div>
+                                
+                                <div class="bot-actions">
+                                    <button class="btn btn-sm btn-success" onclick="startBot('<%= bot.id %>')" <%= bot.isRunning ? 'disabled' : '' %>>
+                                        <i class="fas fa-play"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger" onclick="stopBot('<%= bot.id %>')" <%= !bot.isRunning ? 'disabled' : '' %>>
+                                        <i class="fas fa-stop"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-warning" onclick="restartBot('<%= bot.id %>')">
+                                        <i class="fas fa-sync"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-primary" onclick="openConsole('<%= bot.id %>')">
+                                        <i class="fas fa-terminal"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-primary" onclick="openEditor('<%= bot.id %>')">
+                                        <i class="fas fa-code"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Create Bot Modal -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> Create New Bot</h3>
+                <button class="close-btn" onclick="closeModal('createModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="createBotForm" onsubmit="createBot(event)">
+                    <div class="form-group">
+                        <label>Bot Name</label>
+                        <input type="text" name="name" required placeholder="My WhatsApp Bot">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Node.js Version</label>
+                        <select name="nodeVersion" required>
+                            <% nodeVersions.forEach(ver => { %>
+                                <option value="<%= ver %>">v<%= ver %></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Pairing Code (Optional)</label>
+                        <input type="text" name="pairingCode" placeholder="628xxxxxxxxxx">
+                        <small style="color: rgba(255,255,255,0.5);">Leave empty to use QR code</small>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block" style="width: 100%;">
+                        <i class="fas fa-rocket"></i> Create & Deploy
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Console Modal -->
+    <div id="consoleModal" class="modal console-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-terminal"></i> Bot Console</h3>
+                <button class="close-btn" onclick="closeModal('consoleModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="console-container">
+                    <div class="console-header">
+                        <span style="font-size: 12px; color: rgba(255,255,255,0.5);">
+                            <i class="fas fa-circle text-success"></i> Live Output
+                        </span>
+                        <button onclick="clearConsole()" class="btn btn-sm btn-secondary">
+                            <i class="fas fa-eraser"></i> Clear
+                        </button>
+                    </div>
+                    <div id="consoleOutput" class="console-output">
+                        <div class="console-line system">Connecting to bot console...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Editor Modal -->
+    <div id="editorModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-code"></i> Edit: <span id="editorFileName">index.js</span></h3>
+                <div>
+                    <button onclick="saveFile()" class="btn btn-sm btn-success">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                    <button class="close-btn" onclick="closeModal('editorModal')">&times;</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="editor-container">
+                    <textarea id="codeEditor" class="editor-textarea" spellcheck="false"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+        let currentBotId = null;
+        let currentFile = 'index.js';
+        
+        // Socket events
+        socket.on('connect', () => {
+            console.log('Connected to server');
+        });
+        
+        socket.on('log', (data) => {
+            if (currentBotId) {
+                appendConsole(data.type, data.data);
+            }
+        });
+        
+        socket.on('qr', (data) => {
+            appendConsole('system', 'QR Code received! Please scan with WhatsApp.');
+            // Show QR if needed
+        });
+        
+        socket.on('pairing_code', (data) => {
+            appendConsole('system', `Pairing Code: ${data.code}`);
+        });
+        
+        socket.on('connected', (data) => {
+            appendConsole('system', `✅ Connected! Phone: ${data.phone}`);
+            updateBotStatus(currentBotId, 'running');
+        });
+        
+        socket.on('disconnected', () => {
+            appendConsole('system', '❌ Disconnected from WhatsApp');
+            updateBotStatus(currentBotId, 'stopped');
+        });
+        
+        function showCreateModal() {
+            document.getElementById('createModal').classList.add('active');
+        }
+        
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('active');
+            if (id === 'consoleModal' && currentBotId) {
+                socket.emit('unsubscribe-bot', currentBotId);
+            }
+        }
+        
+        async function createBot(e) {
+            e.preventDefault();
+            const form = e.target;
+            const data = {
+                name: form.name.value,
+                nodeVersion: form.nodeVersion.value,
+                pairingCode: form.pairingCode.value || null
+            };
+            
+            try {
+                const res = await fetch('/api/bots/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await res.json();
+                
+                if (result.success) {
+                    alert('Bot created successfully!');
+                    closeModal('createModal');
+                    location.reload();
+                } else {
+                    alert(result.error || 'Failed to create bot');
+                }
+            } catch (err) {
+                alert('Network error');
+            }
+        }
+        
+        async function startBot(id) {
+            const res = await fetch(`/api/bots/${id}/start`, { method: 'POST' });
+            const result = await res.json();
+            
+            if (result.success) {
+                updateBotStatus(id, 'running');
+            } else {
+                alert(result.error);
+            }
+        }
+        
+        async function stopBot(id) {
+            const res = await fetch(`/api/bots/${id}/stop`, { method: 'POST' });
+            const result = await res.json();
+            
+            if (result.success) {
+                updateBotStatus(id, 'stopped');
+            }
+        }
+        
+        async function restartBot(id) {
+            await stopBot(id);
+            setTimeout(() => startBot(id), 2000);
+        }
+        
+        function openConsole(id) {
+            currentBotId = id;
+            document.getElementById('consoleModal').classList.add('active');
+            socket.emit('subscribe-bot', id);
+            document.getElementById('consoleOutput').innerHTML = '<div class="console-line system">Connecting...</div>';
+            loadLogs(id);
+        }
+        
+        async function loadLogs(id) {
+            const res = await fetch(`/api/bots/${id}/logs?lines=50`);
+            const result = await res.json();
+            
+            const output = document.getElementById('consoleOutput');
+            output.innerHTML = '';
+            
+            result.logs.forEach(log => {
+                appendConsole(log.type, log.data);
+            });
+        }
+        
+        function appendConsole(type, data) {
+            const output = document.getElementById('consoleOutput');
+            const line = document.createElement('div');
+            line.className = `console-line ${type}`;
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${data}`;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function clearConsole() {
+            document.getElementById('consoleOutput').innerHTML = '';
+        }
+        
+        async function openEditor(id, file = 'index.js') {
+            currentBotId = id;
+            currentFile = file;
+            document.getElementById('editorFileName').textContent = file;
+            document.getElementById('editorModal').classList.add('active');
+            
+            const res = await fetch(`/api/bots/${id}/files/${file}`);
+            const result = await res.json();
+            
+            document.getElementById('codeEditor').value = result.content || '';
+        }
+        
+        async function saveFile() {
+            const content = document.getElementById('codeEditor').value;
+            
+            const res = await fetch(`/api/bots/${currentBotId}/files/${currentFile}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content })
+            });
+            
+            const result = await res.json();
+            
+            if (result.success) {
+                alert('File saved!');
+            } else {
+                alert('Failed to save file');
+            }
+        }
+        
+        function updateBotStatus(id, status) {
+            const card = document.getElementById(`bot-${id}`);
+            if (card) {
+                const badge = card.querySelector('.status-badge');
+                badge.className = `status-badge ${status}`;
+                badge.textContent = status;
+            }
+        }
+        
+        // Close modal on outside click
+        window.onclick = function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
+            }
+        }
+    </script>
+</body>
+</html>
