@@ -242,6 +242,53 @@ app.get('/chat', requireAuth, async (req, res) => {
     });
 });
 
+// File upload route for chat
+app.post('/api/upload-chat', requireAuth, upload.single('file'), async (req, res) => {
+    try {
+        const result = await chatSystem.saveFile(req.file, req.session.user.id);
+        res.json({ success: true, ...result });
+    } catch (error) {
+        res.json({ success: false, error: error.message });
+    }
+});
+
+// API Routes untuk admin bot
+app.get('/api/admin/bot-status', async (req, res) => {
+    // Endpoint untuk admin bot cek status
+    const stats = {
+        users: (await db.find('users')).length,
+        activeBots: (await db.find('bots', { isRunning: true })).length,
+        pendingVerifications: (await verification.getPendingVerifications()).length
+    };
+    res.json(stats);
+});
+
+// Get bot info untuk admin bot
+app.get('/api/bot-info/:phone', async (req, res) => {
+    const user = await db.findOne('users', { phone: req.params.phone });
+    if (!user) return res.json({ error: 'User not found' });
+    
+    const bots = await db.find('bots', { userId: user.id });
+    const servers = await db.find('servers', { userId: user.id });
+    
+    res.json({
+        user: {
+            id: user.id,
+            name: user.name,
+            phone: user.phone,
+            isActive: user.isActive
+        },
+        bots: bots.map(b => ({
+            id: b.id,
+            name: b.name,
+            status: b.status,
+            phoneConnected: b.phoneConnected
+        })),
+        servers: servers
+    });
+});
+
+
 // API Routes
 
 // Create Bot
